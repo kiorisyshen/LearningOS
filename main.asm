@@ -1,42 +1,34 @@
-mov ah, 0x0e ; tty mode
+[org 0x7c00] ; tell the assembler that our offset is bootsector code
 
-mov bp, 0x8000 ; this is an address far away from 0x7c00 so that we don't get overwritten
-mov sp, bp ; if the stack is empty then sp points to bp
+; The main routine makes sure the parameters are ready and then calls the function
+mov bx, HELLO
+call print
 
-push 'A'
-push 'B'
-push 'C'
+call print_nl
 
-; to show how the stack grows downwards
-mov al, [0x7ffe] ; 0x8000 - 2
-int 0x10
+mov bx, GOODBYE
+call print
 
-; however, don't try to access [0x8000] now, because it won't work
-; you can only access the stack top so, at this point, only 0x7ffe (look above)
-mov al, [0x8000]
-int 0x10
+call print_nl
 
+mov dx, 0x12fe
+call print_hex
 
-; recover our characters using the standard procedure: 'pop'
-; We can only pop full words so we need an auxiliary register to manipulate
-; the lower byte
-pop bx
-mov al, bl
-int 0x10 ; prints C
-
-pop bx
-mov al, bl
-int 0x10 ; prints B
-
-pop bx
-mov al, bl
-int 0x10 ; prints A
-
-; data that has been pop'd from the stack is garbage now
-mov al, [0x8000]
-int 0x10
-
-
+; that's it! we can hang now
 jmp $
+
+; remember to include subroutines below the hang
+%include "boot_sect_print.asm"
+%include "boot_sect_print_hex.asm"
+
+
+; data
+HELLO:
+    db 'Hello, World', 0
+
+GOODBYE:
+    db 'Goodbye', 0
+
+; padding and magic number
 times 510-($-$$) db 0
 dw 0xaa55
