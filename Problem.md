@@ -1,0 +1,2 @@
+- How to implement BIOS in like arm board
+- what happens if no interrupt
