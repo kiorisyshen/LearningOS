@@ -1,34 +1,27 @@
-[org 0x7c00] ; tell the assembler that our offset is bootsector code
+mov ah, 0x0e ; tty
 
-; The main routine makes sure the parameters are ready and then calls the function
-mov bx, HELLO
-call print
+mov al, [the_secret]
+int 0x10 ; we already saw this doesn't work, right?
 
-call print_nl
+mov bx, 0x7c0 ; remember, the segment is automatically <<4 for you
+mov ds, bx
+; WARNING: from now on all memory references will be offset by 'ds' implicitly
+mov al, [the_secret]
+int 0x10
 
-mov bx, GOODBYE
-call print
+mov al, [es:the_secret]
+int 0x10 ; doesn't look right... isn't 'es' currently 0x000?
 
-call print_nl
+mov bx, 0x7c0
+mov es, bx
+mov al, [es:the_secret]
+int 0x10
 
-mov dx, 0x12fe
-call print_hex
 
-; that's it! we can hang now
 jmp $
 
-; remember to include subroutines below the hang
-%include "boot_sect_print.asm"
-%include "boot_sect_print_hex.asm"
+the_secret:
+    db "X"
 
-
-; data
-HELLO:
-    db 'Hello, World', 0
-
-GOODBYE:
-    db 'Goodbye', 0
-
-; padding and magic number
-times 510-($-$$) db 0
+times 510 - ($-$$) db 0
 dw 0xaa55
