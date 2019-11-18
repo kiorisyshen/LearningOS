@@ -1,0 +1,20 @@
+# build.ninja
+CODE_ROOT = .
+BUILD_ROOT = build
+
+cc     = clang++
+cflags = -Wall -ffreestanding
+
+linker = ld
+linkAsmEntry_flags = -Ttext 0x1000 --oformat binary
+
+rule compile
+  command = $cc $cflags -c $in -o $out
+
+rule linkAsmEntry
+  command = $linker -o $out $linkAsmEntry_flags $in
+
+build $BUILD_ROOT/kernel.o: compile $CODE_ROOT/kernel.cpp
+build $BUILD_ROOT/kernel.bin: linkAsmEntry $BUILD_ROOT/kernel.o $BUILD_ROOT/kernel_entry.o
+
+default $BUILD_ROOT/kernel.bin
