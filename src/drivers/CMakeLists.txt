@@ -1,2 +1,5 @@
-add_library(ports ports.cpp)
-set_target_properties(ports PROPERTIES LINKER_LANGUAGE CXX)
+set(driverSrc ports.cpp)
+
+add_custom_target(drivers
+                   ${CMAKE_CXX_COMPILER} ${CMAKE_CXX_FLAGS} ${driverSrc} -o drivers.o -I${CMAKE_CURRENT_SOURCE_DIR}
+                   )
