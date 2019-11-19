@@ -20,7 +20,7 @@ rule compileASMelf
 
 # cpp compile
 rule compileCPP
-  command = $cc $cflags -c $in -o $out
+  command = $cc $cflags -c $in -o $out -I$CODE_ROOT
 
 # cpp & asm link
 rule linkAsmEntry
@@ -33,7 +33,7 @@ rule catkernel
 
 ## For debug
 rule linkAsmEntryElf
-  command = $linker $linkAsmEntry_flags $in -o $out
+  command = $linker $linkAsmEntry_flags $in -o $out -I$CODE_ROOT
 
 rule empty
   command = printf "Successfully build target: $out"
@@ -41,12 +41,13 @@ rule empty
 build $BUILD_ROOT/bootsect.bin: compileASMbin $CODE_ROOT/boot/bootsect.asm
 build $BUILD_ROOT/kernel_entry.o: compileASMelf $CODE_ROOT/boot/kernel_entry.asm
 
+build $BUILD_ROOT/ports.o: compileCPP $CODE_ROOT/drivers/ports.cpp
 build $BUILD_ROOT/kernel.o: compileCPP $CODE_ROOT/kernel/kernel.cpp
-build $BUILD_ROOT/kernel.bin: linkAsmEntry $BUILD_ROOT/kernel_entry.o $BUILD_ROOT/kernel.o
+build $BUILD_ROOT/kernel.bin: linkAsmEntry $BUILD_ROOT/kernel_entry.o $BUILD_ROOT/kernel.o $BUILD_ROOT/ports.o
 
 build $BUILD_ROOT/os-image.bin: catkernel $BUILD_ROOT/bootsect.bin $BUILD_ROOT/kernel.bin
 
-build $BUILD_ROOT/kernel.elf: linkAsmEntryElf $BUILD_ROOT/kernel_entry.o $BUILD_ROOT/kernel.o
-build debug: empty $BUILD_ROOT/kernel.elf
+build $BUILD_ROOT/kernel.elf: linkAsmEntryElf $BUILD_ROOT/kernel_entry.o $BUILD_ROOT/kernel.o $BUILD_ROOT/ports.o
+build debug: empty $BUILD_ROOT/kernel.elf $BUILD_ROOT/os-image.bin
 
 default $BUILD_ROOT/os-image.bin

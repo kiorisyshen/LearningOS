@@ -6,7 +6,7 @@
         {
             "label": "build debug",
             "type": "shell",
-            "command": "ninja debug -v && qemu-system-i386 -s -S -fda ${workspaceRoot}/build/os-image.bin",
+            "command": "mkdir -p build && rm -rf build/* && ninja -v && ninja debug -v && qemu-system-i386 -s -S -fda ${workspaceRoot}/build/os-image.bin",
             "isBackground": true,
             "problemMatcher": [
                 {
