@@ -27,6 +27,8 @@ export PATH="$PREFIX/bin:$PATH"
 BINUTIL=binutils-2.33.1
 GCCNAME=gcc-9.2.0
 
+GDBNAME=gdb-8.3
+
 ############################
 # Third, build binutils
 ############################
@@ -65,13 +67,36 @@ tar xf gcc-9.2.0.tar.gz
 mkdir -p gcc-build
 cd gcc-build
 printf "$SHELL_FORE_GREEN\nConfiguring $GCCNAME $SHELL_NC\n"
-../$GCCNAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c --without-headers --with-gmp=/usr/local --with-mpfr=/usr/local --with-mpc=/usr/local
+../$GCCNAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c++ --without-headers --with-gmp=/usr/local --with-mpfr=/usr/local --with-mpc=/usr/local
 
 printf "$SHELL_FORE_GREEN\nBuilding $GCCNAME $SHELL_NC\n"
 make all-gcc -j4
 make all-target-libgcc -j4
 make install-gcc
 make install-target-libgcc
+
+popd
+
+############################
+# Additionally, choose to build gdb
+############################
+mkdir -p $(pwd)/tmp/src
+pushd $(pwd)/tmp/src
+
+if ! [ -f $GDBNAME.tar.gz ]; then
+    printf "$SHELL_FORE_GREEN\nDownloading $GDBNAME $SHELL_NC\n"
+    curl -O http://ftp.gnu.org/gnu/gdb/$GDBNAME.tar.gz
+fi
+
+printf "$SHELL_FORE_GREEN\nExtracting $GDBNAME $SHELL_NC\n"
+tar xf $GDBNAME.tar.gz
+mkdir -p gdb-build
+cd gdb-build
+../$GDBNAME/configure --target="$TARGET" --prefix="$PREFIX" --program-prefix=i386-elf-
+
+printf "$SHELL_FORE_GREEN\nBuilding $GDBNAME $SHELL_NC\n"
+make -j4
+make install
 
 popd
 

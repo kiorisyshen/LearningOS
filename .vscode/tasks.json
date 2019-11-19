@@ -4,14 +4,27 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build main",
+            "label": "build debug",
             "type": "shell",
-            "command": "mkdir -p build && cd build && nasm -i ../ -f bin ../main.asm -o main.bin"
-        },
-        {
-            "label": "build c",
-            "type": "shell",
-            "command": "mkdir -p build && cd build && cmake -GNinja .. && ninja"
+            "command": "ninja debug -v && qemu-system-i386 -s -S -fda ${workspaceRoot}/build/os-image.bin",
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "pattern": [
+                        {
+                            "regexp": ".",
+                            "file": 1,
+                            "location": 2,
+                            "message": 3
+                        }
+                    ],
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".",
+                        "endsPattern": ".",
+                    }
+                }
+            ]
         }
     ]
 }
