@@ -1,5 +1,4 @@
 build/*
-!build/build.ninja
 .ninja_*
 cross_compiler/*
 !cross_compiler/build_cross_compiler.sh
