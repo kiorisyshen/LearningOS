@@ -65,7 +65,7 @@ tar xf gcc-9.2.0.tar.gz
 mkdir -p gcc-build
 cd gcc-build
 printf "$SHELL_FORE_GREEN\nConfiguring $GCCNAME $SHELL_NC\n"
-../$GCCNAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c++ --without-headers --with-gmp=/usr/local --with-mpfr=/usr/local --with-mpc=/usr/local
+../$GCCNAME/configure --target=$TARGET --prefix="$PREFIX" --disable-nls --disable-libssp --enable-languages=c --without-headers --with-gmp=/usr/local --with-mpfr=/usr/local --with-mpc=/usr/local
 
 printf "$SHELL_FORE_GREEN\nBuilding $GCCNAME $SHELL_NC\n"
 make all-gcc -j4
