@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/src/**"
+            ],
+            "defines": [],
+            "macFrameworkPath": [
+                ""
+            ],
+            "compilerPath": "${workspaceFolder}/cross_compiler/i386elfgcc/bin/i386-elf-g++"
+        }
+    ],
+    "version": 4
+}
