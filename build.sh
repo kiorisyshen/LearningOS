@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
 
-python3 configure_ninja.py
+rm -rf build
+python3 configure.py
 ninja -C build
