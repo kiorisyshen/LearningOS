@@ -1,9 +1,5 @@
 from ninja_tool import ninja_tool
 
-import boot.configure_nt
-import drivers.configure_nt
-import kernel.configure_nt
-
 import os
 
 (

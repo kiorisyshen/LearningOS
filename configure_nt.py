@@ -25,6 +25,9 @@ ninja_tool.linkFflag = "-Ttext 0x1000"
               "cat $in > $out")
 )
 
+import src.boot.configure_nt
+import src.drivers.configure_nt
+import src.kernel.configure_nt
 import src.configure_nt
 
 (
