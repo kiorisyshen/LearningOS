@@ -23,7 +23,7 @@ class ninja_tool_class:
     linker = None
     linkFflag = None
 
-    currPath = None
+    currPath = None # Relative path to projRoot
 
     _build_types = {"compile": "compile", "link": "link"}
 
@@ -41,7 +41,7 @@ class ninja_tool_class:
         self.buildfile.close()
 
     def step_to_dir(self, currentPath):
-        self.currPath = currentPath
+        self.currPath = os.path.relpath(currentPath, start=self.projRoot)
         return self
 
     def add_default(self, target):
@@ -53,11 +53,7 @@ class ninja_tool_class:
 
     def add_build(self, buildType, out, rule, inputs, variables=None):
         # Calculate source path & product path
-        relPath = os.path.relpath(self.currPath, start=self.projRoot)
-        productPath = check_dir(os.path.join(self.buildRoot, relPath))
-
-        print("Add build for folder: " + relPath)
-        print("Product path: " + productPath)
+        productPath = check_dir(os.path.join(self.buildRoot, self.currPath))
 
         outputs = os.path.join(productPath, out)
 
@@ -65,7 +61,7 @@ class ninja_tool_class:
         if buildType == self._build_types["compile"]:
             self.ninjaWriter.build(outputs=outputs,
                                    rule=rule,
-                                   inputs=[os.path.join(self.currPath, f_code) for f_code in inputs],
+                                   inputs=[os.path.join(self.projRoot, self.currPath, f_code) for f_code in inputs],
                                    variables=variables
                                    )
         elif buildType == self._build_types["link"]:
